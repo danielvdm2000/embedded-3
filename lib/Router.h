@@ -8,7 +8,7 @@
 #include "Response.h"
 
 // Type definition of a route resolver
-typedef Response* (*RouteResolverFn)(Request req);
+typedef Response (*RouteResolverFn)(Request req);
 
 class Router {
     private:

@@ -5,8 +5,8 @@
 
 class TemperatureController {
     public:
-        static Response* getTemperature(Request req);
-        static Response* postTemperature(Request req);
+        static Response getTemperature(Request req);
+        static Response postTemperature(Request req);
 };
 
 #endif

@@ -21,10 +21,11 @@ class Response {
         std::string contentTypeString(ContentType type);
 
     public:
-        Response* status(StatusCode code);
-        Response* html(std::string content);
-        Response* text(std::string content);
+        Response status(StatusCode code);
+        Response html(std::string content);
+        Response text(std::string content);
         std::string build();
+        bool isValid();
 };
 
 #endif

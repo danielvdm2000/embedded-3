@@ -3,23 +3,23 @@
 
 TemperatureRepository temperatureRepository;
 
-Response* TemperatureController::getTemperature(Request req) {
-    Response *res;
+Response TemperatureController::getTemperature(Request req) {
+    Response res;
 
     int temperature = temperatureRepository.getTemperature();
 
     return res
-        ->status(StatusCode::_200)
-        ->text(std::to_string(temperature));
+        .status(StatusCode::_200)
+        .text(std::to_string(2));
 };
 
-Response* TemperatureController::postTemperature(Request req) {
-    Response *res;
+Response TemperatureController::postTemperature(Request req) {
+    Response res;
 
     // TODO get temperature from req
     // temperatureRepository.setTemperature();
 
     return res
-        ->status(StatusCode::_200)
-        ->text("Hello World!");
+        .status(StatusCode::_200)
+        .text("Hello World!");
 };

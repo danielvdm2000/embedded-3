@@ -1,40 +1,56 @@
 #include "Response.h"
 
-Response* Response::status(StatusCode status) {
+Response Response::status(StatusCode status) {
     this->statusCode = status;
-    return this;
+    return *this;
 };
 
-Response* Response::html(std::string content) {
+Response Response::html(std::string content) {
     this->content = content;
     this->contentType = ContentType::HTML;
-    return this;
+    return *this;
 };
 
-Response* Response::text(std::string content) {
+Response Response::text(std::string content) {
     this->content = content;
     this->contentType = ContentType::Text;
-    return this;
+    return *this;
+};
+
+bool Response::isValid() {
+    if (!this->content.length()) {
+        printf("No content provided to the response\r\n");
+        return false;
+    }
+
+    if (!this->contentType) {
+        printf("No content-type provided to the response\r\n");
+        return false;
+    }
+
+    if (!this->statusCode) {
+        printf("No status code provided to the response\r\n");
+        return false;
+    }
+
+    return true;
 };
 
 std::string Response::build() {
     // Add the content to the start of the result
-    std::string result = content;
+    std::string result;
 
-    // Add status code header
-    result.append("HTTP/1.0 ");
-    result.append(statusCodeString(statusCode));
-    result.append("\r\n");
+    // Add status line
+    result.append("HTTP/1.0 " + statusCodeString(statusCode) + "\n");
 
-    // Add content type header
-    result.append("Content-Type: ");
-    result.append(contentTypeString(contentType));
-    result.append("\r\n");
+    // Add headers
+    result.append("Content-Type: " + contentTypeString(contentType) + "\n");
+    result.append("Content-Length: " + std::to_string(content.length()) + "\n");
+    result.append("Connection: Closed\n");
+    result.append("\n");
 
-    // Add content length
-    result.append("Content-Length: ");
-    result.append(std::to_string(content.length()));
-    result.append("\r\n");
+    // Add content
+    result.append(content);
 
     return result;
 };

@@ -37,23 +37,15 @@ void Router::listen(int port) {
     printf("Server running on %s:%d\r\n", ip ? ip : "None", port);
 
     while (true) {
-        printf("Step: 1\r\n");
-
         // Wait of incomming request
         clientSocket = serverSocket.accept();
-
-        printf("Step: 2\r\n");
 
         // Save address of incomming request in the clientAddress object
         clientSocket->getpeername(&clientAddress);
 
-        printf("Step: 3\r\n");
         // Receive the requet
         char requestBuffer[1500];
         clientSocket->recv(requestBuffer, 1500);
-        printf("%s\r\n", requestBuffer);
-
-        printf("Step: 4\r\n");
 
         // Extract infomatin from the request
         char separator[] = " ";
@@ -64,49 +56,47 @@ void Router::listen(int port) {
 
         printf("method: %s path: %s\r\n", method, path);
 
-        printf("Step: 5\r\n");
-
         // Find the corret resolver by method and path
         RouteResolverFn resolver = findResolver(method, path);
-
-        printf("Step: 6\r\n");
 
         if (!resolver) {
             if (routeIsRegisteret(path)) {
                 // TODO responde with unsupported method
+                printf("TODO responde with unsupported method\r\n");
             }
             // TODO responde with a 404
+            printf("TODO responde with a 404\r\n");
         }
-
-        printf("Step: 7\r\n");
 
         // Execute the resolver
         Request request;
-        std::string response = resolver(request)->build();
+        Response response = resolver(request);
 
-        printf("Step: 8\r\n");
+        // Build the response as a string
+        std::string result = response.build();
+
+        printf("%s\r\n", result.c_str());
 
         // Send the response
-        clientSocket->send(response.c_str(), response.length());
-
-        printf("Step: 9\r\n");
+        clientSocket->send(result.c_str(), result.length());
 
         // Close connection
         clientSocket->close();
-
-        printf("Step: 10\r\n");
     }
 };
 
 RouteResolverFn Router::findResolver(std::string method, std::string path) {
     if (method == "GET") {
-        return getResolversDict[path];
+        printf("Found GET resolver\r\n");
+        return getResolversDict.at(path);
     }
 
     if (method == "POST") {
-        return postResolversDict[path];
+        printf("Found POST resolver\r\n");
+        return postResolversDict.at(path);
     }
 
+    printf("Found no resolver\r\n");
     RouteResolverFn emptyResolver;
     return emptyResolver;
 };
